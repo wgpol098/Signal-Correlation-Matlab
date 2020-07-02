@@ -22,7 +22,7 @@ function varargout = signal(varargin)
 
 % Edit the above text to modify the response to help signal
 
-% Last Modified by GUIDE v2.5 02-Jul-2020 15:02:08
+% Last Modified by GUIDE v2.5 02-Jul-2020 20:53:17
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -53,7 +53,10 @@ function signal_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to signal (see VARARGIN)
 
 % Choose default command line output for signal
-handles.signaltype1 = 1
+%default values 
+handles.signaltype1 = 1;
+handles.noise1flag = false;
+handles.noise2flag = false;
 handles.output = hObject;
 
 % Update handles structure
@@ -99,7 +102,7 @@ end
 
 
 function a1_Callback(hObject, eventdata, handles)
-handles.a1 = str2num(get(hObject,'String'));
+handles.a1 = str2double(get(hObject,'String'));
 guidata(hObject, handles);
 % hObject    handle to a1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -124,7 +127,7 @@ end
 
 
 function f1_Callback(hObject, eventdata, handles)
-handles.f1 = str2num(get(hObject,'String'));
+handles.f1 = str2double(get(hObject,'String'));
 guidata(hObject, handles);
 % hObject    handle to f1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -149,34 +152,46 @@ end
 
 % --- Executes on button press in generate1.
 function generate1_Callback(hObject, eventdata, handles)
-a1 = floor(handles.a1);
-f1 = floor(handles.f1)
-fs = floor(handles.fs)
-signal = handles.signaltype1
-%signal = 'Sinus'
+a1 = handles.a1;
+f1 = handles.f1;
+fs = handles.fs;
+period = handles.period;
+signal = handles.signaltype1;
+%signal 1 - sinus
+%signal 2 - sawtooth
+%signal 3 - square
+%signal 4 - noise
 if signal == 1
-    dt = 1/fs;                   % seconds per sample
-    StopTime = 0.25;             % seconds
-    t = (0:dt:StopTime-dt)
-    u = cos(2*pi*f1*t);
-    axes(handles.axes1)
-    plot(t,u)  
+    t = 0:1/fs:period*1/f1+1/fs;% seconds
+    u = a1*cos(2*pi*f1*t);
 elseif signal == 2
-    T = 10*(1/f1)
-    t = 0:1/fs:T-1/fs
-    x = sawtooth(2*pi*f1*t)*a1 % zrob tak dla wszystkiego z tym ze na jeden okres
-    axes(handles.axes1)
-    plot(t,x) 
+    t = 0:1/fs:period*1/f1+1/fs;
+    u = sawtooth(2*pi*f1*t)*a1;
 elseif signal == 3
-    T = 10*(1/f1)
-    x = 0:1/fs:T-1/fs
-    u = square(2*pi*f1*x)*a1
-    axes(handles.axes1)
-    plot(x,u) 
-    xlabel('time (in seconds)');
-    title('Signal versus Time');
+    t = 0:1/fs:period*1/f1+1/fs;
+    u = square(2*pi*f1*t)*a1;
+elseif signal == 4
+    t = 0:1/fs:period*1/f1+1/fs;
+    for i = 1:length(t)
+        u(i) = 0 % make a deviation 
+    end
 end
 
+%white noise
+if handles.noise1flag == true | signal == 4
+    for i = 1:length(u)
+        u(i) = u(i) + randn
+    end
+end
+
+handles.x1 = t
+handles.y1 = u
+
+%plot
+axes(handles.axes1);
+plot(t,u);
+xlabel('time (in seconds)');
+    
 guidata(hObject, handles);
 % hObject    handle to generate1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -210,7 +225,7 @@ end
 
 
 function fs_Callback(hObject, eventdata, handles)
-handles.fs = str2num(get(hObject,'String'))
+handles.fs = str2double(get(hObject,'String'));
 guidata(hObject, handles);
 % hObject    handle to fs (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -231,3 +246,77 @@ function fs_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+
+function period_Callback(hObject, eventdata, handles)
+handles.period = str2double(get(hObject,'String'));
+guidata(hObject, handles);
+% hObject    handle to period (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of period as text
+%        str2double(get(hObject,'String')) returns contents of period as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function period_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to period (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in save1.
+function save1_Callback(hObject, eventdata, handles)
+filter = {'*.mat';'*.txt';'*.csv';'*.*'};
+[file, path] = uiputfile(filter);
+file1 = fopen (strcat(path,file),'w');
+fprintf(file1,'%8.5f,%8.5f\n',[handles.x1;handles.y1]);
+fclose(file1);
+% hObject    handle to save1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in load1.
+function load1_Callback(hObject, eventdata, handles)
+filter = {'*.mat';'*.txt';'*.csv';'*.*'};
+[file,path] = uigetfile(filter);
+file = load(strcat(path,file))
+
+%plot
+axes(handles.axes1);
+plot(file(:,1),file(:,2));
+xlabel('time (in seconds)');
+
+%handles
+handles.x1 = file(:,1)
+handles.y1 = file(:,2)
+
+%f1 for one period
+%l = file(:,1)
+
+
+guidata(hObject, handles);
+% hObject    handle to load1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in whitenoise1.
+function whitenoise1_Callback(hObject, eventdata, handles)
+handles.noise1flag = get(hObject,'Value')
+
+guidata(hObject, handles);
+% hObject    handle to whitenoise1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of whitenoise1
