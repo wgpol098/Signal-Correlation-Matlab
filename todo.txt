@@ -4,7 +4,7 @@ Zrobisz korelację i jakieś inne opcje też jak znajdziesz coś dość łatwego
 
 @Remigiusz
 
-- Zrób drugi sygnał, ale masz zrobić tak, żeby ładnie zmienne wspołgrały z moimi, np u mnie handles.x1 to u siebie zrób handles.x2 i potrzeba to, żeby nie było burdelu.
+- Zrób drugi sygnał, ale masz zrobić tak, żeby ładnie zmienne wspołgrały z moimi, np u mnie handles.x1 to u siebie zrób handles.x2 i potrzeba to, żeby nie było burdelu. To samo masz zrobić z kontrolkami, sprawdzaj mój tag i później na jego podstawie zrób swoje tagi.
 
 @Patryk
 
