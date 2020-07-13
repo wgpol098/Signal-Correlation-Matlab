@@ -1,0 +1,15 @@
+@Hubert
+
+Zrobisz korelację i jakieś inne opcje też jak znajdziesz coś dość łatwego.
+
+@Remigiusz
+
+- Zrób drugi sygnał, ale masz zrobić tak, żeby ładnie zmienne wspołgrały z moimi, np u mnie handles.x1 to u siebie zrób handles.x2 i potrzeba to, żeby nie było burdelu.
+
+@Patryk
+
+- Ogarnięcie widma albo histogramu sygnałów wszystkich.
+
+@Ogólnie
+
+- zapis i odczyt do pliku
