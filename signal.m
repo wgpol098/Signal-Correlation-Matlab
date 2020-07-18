@@ -22,7 +22,7 @@ function varargout = signal(varargin)
 
 % Edit the above text to modify the response to help signal
 
-% Last Modified by GUIDE v2.5 02-Jul-2020 20:53:17
+% Last Modified by GUIDE v2.5 18-Jul-2020 09:22:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,6 +57,8 @@ function signal_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.signaltype1 = 1;
 handles.noise1flag = false;
 handles.noise2flag = false;
+handles.spectrum1flag = false;
+handles.generatedflag = false;
 handles.output = hObject;
 
 % Update handles structure
@@ -162,7 +164,7 @@ signal = handles.signaltype1;
 %signal 3 - square
 %signal 4 - noise
 if signal == 1
-    t = 0:1/fs:period*1/f1+1/fs;% seconds
+    t = 0:1/fs:period*1/f1+1/fs; %seconds
     u = a1*cos(2*pi*f1*t);
 elseif signal == 2
     t = 0:1/fs:period*1/f1+1/fs;
@@ -184,13 +186,17 @@ if handles.noise1flag == true | signal == 4
     end
 end
 
-handles.x1 = t
-handles.y1 = u
+handles.x1 = t;
+handles.y1 = u;
+handles.generatedflag = true;
+
+set(handles.spectrum1,'Value',0);
 
 %plot
 axes(handles.axes1);
 plot(t,u);
-xlabel('time (in seconds)');
+xlabel('Time (in seconds)');
+ylabel('Amplitude (in amperes)');
     
 guidata(hObject, handles);
 % hObject    handle to generate1 (see GCBO)
@@ -275,11 +281,15 @@ end
 
 % --- Executes on button press in save1.
 function save1_Callback(hObject, eventdata, handles)
-filter = {'*.mat';'*.txt';'*.csv';'*.*'};
-[file, path] = uiputfile(filter);
-file1 = fopen (strcat(path,file),'w');
-fprintf(file1,'%8.5f,%8.5f\n',[handles.x1;handles.y1]);
-fclose(file1);
+if handles.generatedflag == true
+    filter = {'*.txt';'*.csv';'*.*'};
+    [file, path] = uiputfile(filter);
+    file1 = fopen (strcat(path,file),'w');
+    fprintf(file1,'%8.5f,%8.5f\n',[handles.x1;handles.y1]);
+    fclose(file1);
+else
+    errordlg('You cannot save a blank plot!','Error');
+end
 % hObject    handle to save1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -287,18 +297,20 @@ fclose(file1);
 
 % --- Executes on button press in load1.
 function load1_Callback(hObject, eventdata, handles)
-filter = {'*.mat';'*.txt';'*.csv';'*.*'};
+filter = {'*.txt';'*.csv';'*.*'};
 [file,path] = uigetfile(filter);
-file = load(strcat(path,file))
+file = load(strcat(path,file));
 
 %plot
 axes(handles.axes1);
 plot(file(:,1),file(:,2));
-xlabel('time (in seconds)');
+xlabel('Time (in seconds)');
+ylabel('Amplitude (in amperes)');
 
 %handles
-handles.x1 = file(:,1)
-handles.y1 = file(:,2)
+handles.x1 = file(:,1);
+handles.y1 = file(:,2);
+handles.generatedflag = true;
 
 %f1 for one period
 %l = file(:,1)
@@ -312,7 +324,7 @@ guidata(hObject, handles);
 
 % --- Executes on button press in whitenoise1.
 function whitenoise1_Callback(hObject, eventdata, handles)
-handles.noise1flag = get(hObject,'Value')
+handles.noise1flag = get(hObject,'Value');
 
 guidata(hObject, handles);
 % hObject    handle to whitenoise1 (see GCBO)
@@ -320,3 +332,33 @@ guidata(hObject, handles);
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of whitenoise1
+
+
+% --- Executes on button press in spectrum1.
+function spectrum1_Callback(hObject, eventdata, handles)
+handles.spectrum1flag = get(hObject,'Value')
+
+if handles.spectrum1flag == true 
+    fs = handles.fs;
+    y = fftshift(fft(handles.y1));
+    n = length(handles.y1); 
+    f = -fs/2:fs/n:fs/2-fs/n; 
+    power = abs(y)*2/n;
+    
+    %plot
+    axes(handles.axes1);
+    plot(f,power);
+    xlabel('Frequency (in hertz)');
+    ylabel('Power (in amperes)');
+else
+    axes(handles.axes1);
+    plot(handles.x1,handles.y1);
+    xlabel('Time (in seconds)');
+    ylabel('Amplitude (in amperes)');
+end
+guidata(hObject, handles);
+% hObject    handle to spectrum1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of spectrum1
