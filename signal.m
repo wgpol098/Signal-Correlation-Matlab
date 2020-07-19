@@ -22,7 +22,7 @@ function varargout = signal(varargin)
 
 % Edit the above text to modify the response to help signal
 
-% Last Modified by GUIDE v2.5 18-Jul-2020 09:22:16
+% Last Modified by GUIDE v2.5 19-Jul-2020 18:52:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,9 +55,11 @@ function signal_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for signal
 %default values 
 handles.signaltype1 = 1;
+handles.signaltype2 = 1;
 handles.noise1flag = false;
 handles.noise2flag = false;
 handles.spectrum1flag = false;
+handles.spectrum2flag = false;
 handles.generatedflag = false;
 handles.output = hObject;
 
@@ -362,3 +364,264 @@ guidata(hObject, handles);
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of spectrum1
+
+
+% --- Executes on button press in spectrum2.
+function spectrum2_Callback(hObject, eventdata, handles)
+handles.spectrum2flag = get(hObject,'Value')
+
+if handles.spectrum2flag == true 
+    fs2 = handles.fs2;
+    y2 = fftshift(fft(handles.y2));
+    n2 = length(handles.y2); 
+    f2 = -fs2/2:fs2/n2:fs2/2-fs2/n2; 
+    power2 = abs(y2)*2/n2;
+    
+    %plot
+    axes(handles.axes2);
+    plot(f2,power2);
+    xlabel('Frequency (in hertz)');
+    ylabel('Power (in amperes)');
+else
+    axes(handles.axes2);
+    plot(handles.x2,handles.y2);
+    xlabel('Time (in seconds)');
+    ylabel('Amplitude (in amperes)');
+end
+guidata(hObject, handles);
+
+% hObject    handle to spectrum2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of spectrum2
+
+
+
+function a2_Callback(hObject, eventdata, handles)
+% hObject    handle to a2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of a2 as text
+%        str2double(get(hObject,'String')) returns contents of a2 as a double
+handles.a2 = str2double(get(hObject,'String'));
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function a2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to a2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function f2_Callback(hObject, eventdata, handles)
+handles.f2 = str2double(get(hObject,'String'));
+guidata(hObject, handles);
+% hObject    handle to f2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of f2 as text
+%        str2double(get(hObject,'String')) returns contents of f2 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function f2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to f2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in load2.
+function load2_Callback(hObject, eventdata, handles)
+filter2 = {'*.txt';'*.csv';'*.*'};
+[file2,path2] = uigetfile(filter2);
+file2 = load(strcat(path2,file2));
+
+%plot
+axes(handles.axes2);
+plot(file2(:,1),file2(:,2));
+xlabel('Time (in seconds)');
+ylabel('Amplitude (in amperes)');
+
+%handles
+handles.x2 = file2(:,1);
+handles.y2 = file2(:,2);
+handles.generatedflag2 = true;
+
+%f1 for one period2
+%l = file(:,1)
+
+
+guidata(hObject, handles);
+% hObject    handle to load2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in save2.
+function save2_Callback(hObject, eventdata, handles)
+if handles.generatedflag2 == true
+    filter2 = {'*.txt';'*.csv';'*.*'};
+    [file2, path2] = uiputfile(filter2);
+    file2_2 = fopen (strcat(path2,file2),'w');
+    fprintf(file2_2,'%8.5f,%8.5f\n',[handles.x2;handles.y2]);
+    fclose(file2_2);
+else
+    errordlg('You cannot save a blank plot!','Error');
+end
+% hObject    handle to save2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in generate2.
+function generate2_Callback(hObject, eventdata, handles)
+a2 = handles.a2;
+f2 = handles.f2;
+fs2 = handles.fs2;
+period2 = handles.period2;
+signal2 = handles.signaltype2;
+%signal 1 - sinus
+%signal 2 - sawtooth
+%signal 3 - square
+%signal 4 - noise
+if signal2 == 1
+    t2 = 0:1/fs2:period2*1/f2+1/fs2; %seconds
+    u2 = a2*cos(2*pi*f2*t2);
+elseif signal2 == 2
+    t2 = 0:1/fs2:period2*1/f2+1/fs2;
+    u2 = sawtooth(2*pi*f2*t2)*a2;
+elseif signal2 == 3
+    t2 = 0:1/fs2:period2*1/f2+1/fs2;
+    u2 = square(2*pi*f2*t2)*a2;
+elseif signal2 == 4
+    t2 = 0:1/fs2:period2*1/f2+1/fs2;
+    for i = 1:length(t2)
+        u2(i) = 0 % make a deviation 
+    end
+end
+
+%white noise
+if handles.noise2flag == true | signal2 == 4
+    for i = 1:length(u)
+        u2(i) = u2(i) + randn
+    end
+end
+
+handles.x2 = t2;
+handles.y2 = u2;
+handles.generatedflag2 = true;
+
+set(handles.spectrum2,'Value',0);
+
+%plot
+axes(handles.axes2);
+plot(t2,u2);
+xlabel('Time (in seconds)');
+ylabel('Amplitude (in amperes)');
+    
+guidata(hObject, handles);
+
+% hObject    handle to generate2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on selection change in signaltype2.
+function signaltype2_Callback(hObject, eventdata, handles)
+% hObject    handle to signaltype2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns signaltype2 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from signaltype2
+handles.signaltype2 = get(hObject,'Value');
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function signaltype2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to signaltype2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in whitenoise2.
+function whitenoise2_Callback(hObject, eventdata, handles)
+handles.noise1flag2 = get(hObject,'Value');
+
+guidata(hObject, handles);
+% hObject    handle to whitenoise2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of whitenoise2
+
+
+
+function fs2_Callback(hObject, eventdata, handles)
+handles.fs2 = str2double(get(hObject,'String'));
+guidata(hObject, handles);
+% hObject    handle to fs2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of fs2 as text
+%        str2double(get(hObject,'String')) returns contents of fs2 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function fs2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to fs2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+function period2_Callback(hObject, eventdata, handles)
+handles.period2 = str2double(get(hObject,'String'));
+guidata(hObject, handles);
+% hObject    handle to period2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of period2 as text
+%        str2double(get(hObject,'String')) returns contents of period2 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function period2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to period2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
