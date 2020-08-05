@@ -22,7 +22,7 @@ function varargout = signal(varargin)
 
 % Edit the above text to modify the response to help signal
 
-% Last Modified by GUIDE v2.5 19-Jul-2020 18:52:25
+% Last Modified by GUIDE v2.5 02-Aug-2020 11:44:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -625,3 +625,19 @@ function period2_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+
+
+% --- Executes on button press in Process.
+function Process_Callback(hObject, eventdata, handles)
+axes(handles.axes3);
+xc=handles.x2;
+yc1=handles.y1;
+yc2=handles.y2;
+r=xcorr(yc1,yc2);
+r=r(1:size(xc));
+plot(xc,r)
+% hObject    handle to Process (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
