@@ -1,10 +1,10 @@
 @Hubert
 
-Zrobisz korelację i jakieś inne opcje też jak znajdziesz coś dość łatwego.
+> korelacja do poprawy
 
 @Remigiusz - Zrobione
 
-- Zrób drugi sygnał, ale masz zrobić tak, żeby ładnie zmienne wspołgrały z moimi, np u mnie handles.x1 to u siebie zrób handles.x2 i potrzeba to, żeby nie było burdelu. To samo masz zrobić z kontrolkami, sprawdzaj mój tag i później na jego podstawie zrób swoje tagi.
+> nie działa dodawanie szumu do sygnałów i samo generowanie szumu - do poprawy
 
 @Patryk
 
@@ -13,3 +13,5 @@ Zrobisz korelację i jakieś inne opcje też jak znajdziesz coś dość łatwego
 @Ogólnie
 
 - zapis i odczyt do pliku
+- zabezpieczeyć pola, żeby nie można było wpisywać literek, bo teraz rysuje pusty wykres
+- fp powinno być jedne dla całości

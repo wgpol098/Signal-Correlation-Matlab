@@ -518,7 +518,7 @@ end
 
 %white noise
 if handles.noise2flag == true | signal2 == 4
-    for i = 1:length(u)
+    for i = 1:length(u2)
         u2(i) = u2(i) + randn
     end
 end
@@ -568,7 +568,7 @@ end
 
 % --- Executes on button press in whitenoise2.
 function whitenoise2_Callback(hObject, eventdata, handles)
-handles.noise1flag2 = get(hObject,'Value');
+handles.noise2flag = get(hObject,'Value');
 
 guidata(hObject, handles);
 % hObject    handle to whitenoise2 (see GCBO)
@@ -636,7 +636,15 @@ xc=handles.x2;
 yc1=handles.y1;
 yc2=handles.y2;
 r=xcorr(yc1,yc2);
+s=size(xc);
+if s(1) == 1
+    st=s(2)
+else
+    st=s(1)
+end
+r=r(1:st);
 r=r(1:size(xc));
+axes(handles.axes3);
 plot(xc,r)
 % hObject    handle to Process (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
