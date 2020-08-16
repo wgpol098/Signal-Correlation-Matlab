@@ -643,9 +643,10 @@ else
     st=s(1)
 end
 r=r(1:st);
-r = max(r,0)
+%r = max(r,0)
 axes(handles.axes3);
-bar(xc,r)
+plot(xc,r)
+%bar(xc,r)
 % hObject    handle to Process (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
