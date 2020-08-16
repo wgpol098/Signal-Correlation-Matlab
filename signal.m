@@ -518,7 +518,7 @@ end
 
 %white noise
 if handles.noise2flag == true | signal2 == 4
-    for i = 1:length(u)
+    for i = 1:length(u2)
         u2(i) = u2(i) + randn
     end
 end
@@ -568,7 +568,7 @@ end
 
 % --- Executes on button press in whitenoise2.
 function whitenoise2_Callback(hObject, eventdata, handles)
-handles.noise1flag2 = get(hObject,'Value');
+handles.noise2flag = get(hObject,'Value');
 
 guidata(hObject, handles);
 % hObject    handle to whitenoise2 (see GCBO)
