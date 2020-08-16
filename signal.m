@@ -637,6 +637,7 @@ yc1=handles.y1;
 yc2=handles.y2;
 r=xcorr(yc1,yc2);
 r=r(1:size(xc));
+axes(handles.axes3);
 plot(xc,r)
 % hObject    handle to Process (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
