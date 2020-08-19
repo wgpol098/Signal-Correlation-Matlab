@@ -463,11 +463,7 @@ yc2=handles.y2;
 r=xcorr(yc1,yc2);
 s=size(xc);
 s=max(s);
-maxr=max(r)
-ta1=handles.a1;
-ta2=handles.a2;
-ta1=(ta1*ta2)/2;
-r=(r/maxr)*ta1;
+
 %r=r(s/2:s);
 %r = max(r,0)
 axes(handles.axes3);
