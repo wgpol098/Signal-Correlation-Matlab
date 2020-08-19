@@ -213,10 +213,10 @@ function spectrum2_Callback(hObject, eventdata, handles)
 handles.spectrum2flag = get(hObject,'Value')
 
 if handles.spectrum2flag == true 
-    fs2 = handles.fs2;
+    fs = handles.fs;
     y2 = fftshift(fft(handles.y2));
     n2 = length(handles.y2); 
-    f2 = -fs2/2:fs2/n2:fs2/2-fs2/n2; 
+    f2 = -fs/2:fs/n2:fs/2-fs/n2; 
     power2 = abs(y2)*2/n2;
     
     %plot
@@ -292,7 +292,7 @@ end
 function generate2_Callback(hObject, eventdata, handles)
 a2 = handles.a2;
 f2 = handles.f2;
-fs2 = handles.fs2;
+fs = handles.fs;
 period2 = handles.period2;
 signal2 = handles.signaltype2;
 %signal 1 - sinus
@@ -300,16 +300,16 @@ signal2 = handles.signaltype2;
 %signal 3 - square
 %signal 4 - noise
 if signal2 == 1
-    t2 = 0:1/fs2:period2*1/f2+1/fs2; %seconds
+    t2 = 0:1/fs:period2*1/f2+1/fs; %seconds
     u2 = a2*sin(2*pi*f2*t2);
 elseif signal2 == 2
-    t2 = 0:1/fs2:period2*1/f2+1/fs2;
+    t2 = 0:1/fs:period2*1/f2+1/fs;
     u2 = sawtooth(2*pi*f2*t2)*a2;
 elseif signal2 == 3
-    t2 = 0:1/fs2:period2*1/f2+1/fs2;
+    t2 = 0:1/fs:period2*1/f2+1/fs;
     u2 = square(2*pi*f2*t2)*a2;
 elseif signal2 == 4
-    t2 = 0:1/fs2:period2*1/f2+1/fs2;
+    t2 = 0:1/fs:period2*1/f2+1/fs;
     for i = 1:length(t2)
         u2(i) = 0 % make a deviation 
     end
@@ -333,7 +333,6 @@ axes(handles.axes2);
 plot(t2,u2);
 xlabel('Time (in seconds)');
 ylabel('Amplitude (in amperes)');
-    
 guidata(hObject, handles);
 
 
@@ -376,19 +375,9 @@ end
 
 
 function Process_Callback(hObject, eventdata, handles)
-axes(handles.axes3);
-xc=handles.x2;
-yc1=handles.y1;
-yc2=handles.y2;
-r=xcorr(yc1,yc2);
-s=size(xc);
-if s(1) == 1
-    st=s(2)
-else
-    st=s(1)
-end
-r=r(1:st);
-%r = max(r,0)
-axes(handles.axes3);
-plot(xc,r)
-%bar(xc,r)
+
+
+function save3_Callback(hObject, eventdata, handles)
+
+
+function load3_Callback(hObject, eventdata, handles)
