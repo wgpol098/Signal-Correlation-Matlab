@@ -76,6 +76,12 @@ f1 = handles.f1;
 fs = handles.fs;
 period = handles.period;
 signal = handles.signaltype1;
+
+if a1 == 0 || f1 == 0 || fs == 0 || period == 0
+    errordlg('Cant generate with 0 value!','Error');
+    return
+end
+
 %signal 1 - sinus
 %signal 2 - sawtooth
 %signal 3 - square
@@ -307,6 +313,12 @@ f2 = handles.f2;
 fs = handles.fs;
 period2 = handles.period2;
 signal2 = handles.signaltype2;
+
+if a2 == 0 || f2 == 0 || fs == 0 || period2 == 0
+    errordlg('Cant generate with 0 value!','Error');
+    return
+end
+
 %signal 1 - sinus
 %signal 2 - sawtooth
 %signal 3 - square
@@ -432,3 +444,6 @@ function Number = RemoveLetters(StringWithLetters)
     Number = StringWithLetters;
     LettersInString = isletter(StringWithLetters);
     Number(LettersInString)=[];
+    if strlength(Number) == 0
+        Number = "0";
+    end
