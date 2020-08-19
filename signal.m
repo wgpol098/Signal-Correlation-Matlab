@@ -173,20 +173,21 @@ end
 function load1_Callback(hObject, eventdata, handles)
 filter = {'*.txt';'*.csv';'*.*'};
 [file,path] = uigetfile(filter);
-file = load(strcat(path,file));
+if file ~= 0
+    file = load(strcat(path,file));
 
-%plot
-axes(handles.axes1);
-plot(file(:,1),file(:,2));
-xlabel('Periods');
-ylabel('Amplitude (in amperes)');
+    %plot
+    axes(handles.axes1);
+    plot(file(:,1),file(:,2));
+    xlabel('Periods');
+    ylabel('Amplitude (in amperes)');
 
-%handles
-handles.x1 = file(:,1);
-handles.y1 = file(:,2);
-handles.generatedflag = true;
-guidata(hObject, handles);
-
+    %handles
+    handles.x1 = transpose(file(:,1));
+    handles.y1 = transpose(file(:,2));
+    handles.generatedflag = true;
+    guidata(hObject, handles);
+end
 
 function whitenoise1_Callback(hObject, eventdata, handles)
 handles.noise1flag = get(hObject,'Value');
@@ -197,24 +198,24 @@ function spectrum1_Callback(hObject, eventdata, handles)
 handles.spectrum1flag = get(hObject,'Value')
 
 if handles.generatedflag == true
-if handles.spectrum1flag == true
-    fs = handles.fs;
-    y = fftshift(fft(handles.y1));
-    n = length(handles.y1);
-    f = -fs/2:fs/n:fs/2-fs/n;
-    power = abs(y)*2/n;
+    if handles.spectrum1flag == true
+        fs = handles.fs; % jeœli wczytujesz z pliku trzeba jakoœ sobie wyliczyæ fs
+        y = fftshift(fft(handles.y1));
+        n = length(handles.y1);
+        f = -fs/2:fs/n:fs/2-fs/n;
+        power = abs(y)*2/n;
     
-    %plot
-    axes(handles.axes1);
-    plot(f,power);
-    xlabel('Frequency (in hertz)');
-    ylabel('Power (in amperes)');
-else
-    axes(handles.axes1);
-    plot(handles.x1,handles.y1);
-    xlabel('Time (in seconds)');
-    ylabel('Amplitude (in amperes)');
-end
+        %plot
+        axes(handles.axes1);
+        plot(f,power);
+        xlabel('Frequency (in hertz)');
+        ylabel('Power (in amperes)');
+    else
+        axes(handles.axes1);
+        plot(handles.x1,handles.y1);
+        xlabel('Periods');
+        ylabel('Amplitude (in amperes)');
+    end
 end
 guidata(hObject, handles);
 
@@ -238,7 +239,7 @@ if handles.spectrum2flag == true
 else
     axes(handles.axes2);
     plot(handles.x2,handles.y2);
-    xlabel('Time (in seconds)');
+    xlabel('Periods');
     ylabel('Amplitude (in amperes)');
 end
 end
@@ -271,20 +272,21 @@ end
 function load2_Callback(hObject, eventdata, handles)
 filter2 = {'*.txt';'*.csv';'*.*'};
 [file2,path2] = uigetfile(filter2);
-file2 = load(strcat(path2,file2));
+if file2 ~= 0
+    file2 = load(strcat(path2,file2));
 
-%plot
-axes(handles.axes2);
-plot(file2(:,1),file2(:,2));
-xlabel('Time (in seconds)');
-ylabel('Amplitude (in amperes)');
+    %plot
+    axes(handles.axes2);
+    plot(file2(:,1),file2(:,2));
+    xlabel('Periods');
+    ylabel('Amplitude (in amperes)');
 
-%handles
-handles.x2 = file2(:,1);
-handles.y2 = file2(:,2);
-handles.generatedflag2 = true;
-guidata(hObject, handles);
-
+    %handles
+    handles.x2 = transpose(file2(:,1));
+    handles.y2 = transpose(file2(:,2));
+    handles.generatedflag2 = true;
+    guidata(hObject, handles);
+end
 
 function save2_Callback(hObject, eventdata, handles)
 if handles.generatedflag2 == true
@@ -344,7 +346,7 @@ set(handles.spectrum2,'Value',0);
 %plot
 axes(handles.axes2);
 plot(t2,u2);
-xlabel('Time (in seconds)');
+xlabel('Periods');
 ylabel('Amplitude (in amperes)');
 guidata(hObject, handles);
 
@@ -385,7 +387,7 @@ if handles.spectrum3flag == true
 else
     axes(handles.axes3);
     plot(handles.x3,handles.y3);
-    xlabel('Time (in seconds)');
+    xlabel('Periods');
     ylabel('Amplitude (in amperes)');
 end
 end
@@ -408,55 +410,51 @@ end
 function load3_Callback(hObject, eventdata, handles)
 filter3 = {'*.txt';'*.csv';'*.*'};
 [file3,path3] = uigetfile(filter3);
-file3 = load(strcat(path3,file3));
 
-%plot
-axes(handles.axes3);
-plot(file3(:,1),file3(:,2));
-xlabel('Time (in seconds)');
-ylabel('Amplitude (in amperes)');
+if file3 ~= 0
+    file3 = load(strcat(path3,file3));
 
-%handles
-handles.x3 = file3(:,1);
-handles.y3 = file3(:,2);
-handles.generatedflag3 = true;
-guidata(hObject, handles);
+    %plot
+    axes(handles.axes3);
+    plot(file3(:,1),file3(:,2));
+    xlabel('Periods');
+    ylabel('Amplitude (in amperes)');
+
+    %handles
+    handles.x3 = transpose(file3(:,1));
+    handles.y3 = transpose(file3(:,2));
+    handles.generatedflag3 = true;
+    guidata(hObject, handles);
+end
 
 function Process_Callback(hObject, eventdata, handles)
-%axes(handles.axes3);
-xc=handles.x1;
-yc1=handles.y1;
-yc2=handles.y2;
-r=xcorr(yc1,yc2);
-s=size(xc);
-s=max(s);
-maxr=max(r)
-ta1=handles.a1;
-ta2=handles.a2;
-ta1=(ta1*ta2)/2;
-r=(r/maxr)*ta1;
-%r=r(s/2:s);
-%r = max(r,0)
-axes(handles.axes3);
-x3s=max(size(r));
-x3=1:x3s;
-plot(x3,r)
-handles.y3=r;
-handles.x3=x3;
-handles.generatedflag3 = true;
-guidata(hObject, handles);
-%bar(xc,r)
+if handles.generatedflag == true && handles.generatedflag2 == true
+    r=xcorr(handles.y1,handles.y2);
+    s=max(size(handles.x1));
+    maxr=max(r)
+    r=(r/maxr)*(max(handles.y1)*max(handles.y2))/2;
+    axes(handles.axes3);
+    x3=1:max(size(r));
+    plot(x3,r);
+    xlabel('No. Samples');
+    ylabel('Amplitude (in amperes)');
+    handles.y3=r;
+    handles.x3=x3;
+    handles.generatedflag3 = true;
+    guidata(hObject, handles);
+else
+    errordlg('You cannot generate correlation!','Error');
+end
 
 function Number = RemoveLetters(StringWithLetters)
-    Number = StringWithLetters;
-    LettersInString = isletter(StringWithLetters);
-    Number(LettersInString)=[];
-    if strlength(Number) == 0
-        Number = "0";
-    end
+Number = StringWithLetters;
+LettersInString = isletter(StringWithLetters);
+Number(LettersInString)=[];
+if strlength(Number) == 0
+    Number = "0";
+end
 
-
-
+    
 function NoSamples_Callback(hObject, eventdata, handles)
 tempstr = RemoveLetters(get(hObject,'String'));
 handles.noSamples = str2double(tempstr);
