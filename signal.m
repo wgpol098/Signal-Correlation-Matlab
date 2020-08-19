@@ -35,6 +35,7 @@ handles.a1 = 0;
 handles.a2 = 0;
 handles.f1 = 0;
 handles.f2 = 0;
+handles.f3 = 0;
 handles.period = 0;
 handles.period2 = 0;
 handles.fs = 0;
@@ -418,12 +419,30 @@ end
 
 function spectrum3_Callback(hObject, eventdata, handles)
 % TO DO JAK B�DZIE KORELACJA
-handles.spectrum3flag = get(hObject, 'Value');
-
+%---------
+handles.spectrum3flag = get(hObject,'Value')
 if handles.generatedflag3 == true
+if handles.spectrum3flag == true 
+    fs = handles.fs;
+    y3 = fftshift(fft(handles.y3));
+    n3 = length(handles.y3); 
+    f3 = -fs/2:fs/n3:fs/2-fs/n3; 
+    power3 = abs(y3)*2/n3;
+    
+    %plot
+    axes(handles.axes3);
+    plot(f3,power3);
+    xlabel('Frequency (in hertz)');
+    ylabel('Power (in amperes)');
+else
+    axes(handles.axes3);
+    plot(handles.x3,handles.y3);
+    xlabel('Time (in seconds)');
+    ylabel('Amplitude (in amperes)');
 end
-
+end
 guidata(hObject, handles);
+
 
 
 function save3_Callback(hObject, eventdata, handles)
@@ -471,7 +490,13 @@ r=(r/maxr)*ta1;
 %r=r(s/2:s);
 %r = max(r,0)
 axes(handles.axes3);
-plot(r)
+x3s=max(size(r));
+x3=1:x3s;
+plot(x3,r)
+handles.y3=r;
+handles.x3=x3;
+handles.generatedflag3 = true;
+guidata(hObject, handles);
 %bar(xc,r)
 
 function Number = RemoveLetters(StringWithLetters)
