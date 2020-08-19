@@ -195,8 +195,8 @@ if handles.generatedflag == true
 if handles.spectrum1flag == true
     fs = handles.fs;
     y = fftshift(fft(handles.y1));
-    n = length(handles.y1); 
-    f = -fs/2:fs/n:fs/2-fs/n; 
+    n = length(handles.y1);
+    f = -fs/2:fs/n:fs/2-fs/n;
     power = abs(y)*2/n;
     
     %plot
