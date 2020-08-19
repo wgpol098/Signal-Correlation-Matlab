@@ -39,6 +39,7 @@ handles.f3 = 0;
 handles.period = 0;
 handles.period2 = 0;
 handles.fs = 0;
+handles.noSamples = 0;
 handles.signaltype1 = 1;
 
 
@@ -86,32 +87,27 @@ function generate1_Callback(hObject, eventdata, handles)
 a1 = handles.a1;
 f1 = handles.f1;
 fs = handles.fs;
-period = handles.period;
 signal = handles.signaltype1;
 noSamples = handles.noSamples
 
-if a1 == 0 || f1 == 0 || fs == 0 || isempty(a1) || isempty(f1) || isempty(fs)
+if a1 == 0 || f1 == 0 || fs == 0 || noSamples == 0 || isempty(a1) || isempty(f1) || isempty(fs) || isempty(noSamples)
     errordlg('Cant generate with bad value!','Error');
     return
 end
 
+numSeconds = noSamples / fs;
+t = linspace(0, numSeconds, noSamples);
 %signal 1 - sinus
 %signal 2 - sawtooth
 %signal 3 - square
 %signal 4 - noise
 if signal == 1
-    numSeconds = noSamples / fs
-    t = linspace(0, numSeconds, noSamples);
-    %t = 0:1/fs:period*1/f1+1/fs; %seconds
     u = a1*sin(2*pi*f1*t);
 elseif signal == 2
-    t = 0:1/fs:period*1/f1+1/fs;
     u = sawtooth(2*pi*f1*t)*a1;
 elseif signal == 3
-    t = 0:1/fs:period*1/f1+1/fs;
     u = square(2*pi*f1*t)*a1;
 elseif signal == 4
-    t = 0:1/fs:period*1/f1+1/fs;
     for i = 1:length(t)
         u(i) = 0 % make a deviation 
     end
@@ -133,7 +129,7 @@ set(handles.spectrum1,'Value',0);
 %plot
 axes(handles.axes1);
 plot(t,u);
-xlabel('Time (in seconds)');
+xlabel('Periods');
 ylabel('Amplitude (in amperes)');
     
 guidata(hObject, handles);
@@ -162,18 +158,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-function period_Callback(hObject, eventdata, handles)
-tempstr = RemoveLetters(get(hObject,'String'));
-handles.period = str2double(tempstr);
-guidata(hObject, handles);
-
-
-function period_CreateFcn(hObject, eventdata, handles)
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
 function save1_Callback(hObject, eventdata, handles)
 if handles.generatedflag == true
     filter = {'*.txt';'*.csv';'*.*'};
@@ -194,17 +178,13 @@ file = load(strcat(path,file));
 %plot
 axes(handles.axes1);
 plot(file(:,1),file(:,2));
-xlabel('Time (in seconds)');
+xlabel('Periods');
 ylabel('Amplitude (in amperes)');
 
 %handles
 handles.x1 = file(:,1);
 handles.y1 = file(:,2);
 handles.generatedflag = true;
-
-%f1 for one period
-%l = file(:,1)
-
 guidata(hObject, handles);
 
 
@@ -303,10 +283,6 @@ ylabel('Amplitude (in amperes)');
 handles.x2 = file2(:,1);
 handles.y2 = file2(:,2);
 handles.generatedflag2 = true;
-
-%f1 for one period2
-%l = file(:,1)
-
 guidata(hObject, handles);
 
 
@@ -326,32 +302,27 @@ function generate2_Callback(hObject, eventdata, handles)
 a2 = handles.a2;
 f2 = handles.f2;
 fs = handles.fs;
-period2 = handles.period2;
 signal2 = handles.signaltype2;
 noSamples = handles.noSamples;
 
-if a2 == 0 || f2 == 0 || fs == 0 || isempty(a2) || isempty(f2) || isempty(fs)
+if a2 == 0 || f2 == 0 || fs == 0 || noSamples == 0 || isempty(a2) || isempty(f2) || isempty(fs) || isempty(noSamples)
     errordlg('Cant generate with bad value!','Error');
     return
 end
-
+numSeconds = noSamples / fs;
+t2 = linspace(0, numSeconds, noSamples);
+    
 %signal 1 - sinus
 %signal 2 - sawtooth
 %signal 3 - square
 %signal 4 - noise
 if signal2 == 1
-    numSeconds = noSamples / fs
-    t2 = linspace(0, numSeconds, noSamples);
-    %t2 = 0:1/fs:period2*1/f2+1/fs; %seconds
     u2 = a2*sin(2*pi*f2*t2);
 elseif signal2 == 2
-    t2 = 0:1/fs:period2*1/f2+1/fs;
     u2 = sawtooth(2*pi*f2*t2)*a2;
 elseif signal2 == 3
-    t2 = 0:1/fs:period2*1/f2+1/fs;
     u2 = square(2*pi*f2*t2)*a2;
 elseif signal2 == 4
-    t2 = 0:1/fs:period2*1/f2+1/fs;
     for i = 1:length(t2)
         u2(i) = 0 % make a deviation 
     end
@@ -392,29 +363,6 @@ end
 function whitenoise2_Callback(hObject, eventdata, handles)
 handles.noise2flag = get(hObject,'Value');
 guidata(hObject, handles);
-
-
-function fs2_Callback(hObject, eventdata, handles)
-handles.fs2 = str2double(get(hObject,'String'));
-guidata(hObject, handles);
-
-
-function fs2_CreateFcn(hObject, eventdata, handles)
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-function period2_Callback(hObject, eventdata, handles)
-tempstr = RemoveLetters(get(hObject,'String'));
-handles.period2 = str2double(tempstr);
-guidata(hObject, handles);
-
-
-function period2_CreateFcn(hObject, eventdata, handles)
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
 
 
 function spectrum3_Callback(hObject, eventdata, handles)
