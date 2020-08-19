@@ -24,7 +24,10 @@ handles.noise1flag = false;
 handles.noise2flag = false;
 handles.spectrum1flag = false;
 handles.spectrum2flag = false;
+handles.spectrum3flag = false;
 handles.generatedflag = false;
+handles.generatedflag2 = false;
+handles.generatedflag3 = false;
 handles.output = hObject;
 
 guidata(hObject, handles); % Update handles structure
@@ -188,7 +191,8 @@ guidata(hObject, handles);
 function spectrum1_Callback(hObject, eventdata, handles)
 handles.spectrum1flag = get(hObject,'Value')
 
-if handles.spectrum1flag == true 
+if handles.generatedflag == true
+if handles.spectrum1flag == true
     fs = handles.fs;
     y = fftshift(fft(handles.y1));
     n = length(handles.y1); 
@@ -206,12 +210,14 @@ else
     xlabel('Time (in seconds)');
     ylabel('Amplitude (in amperes)');
 end
+end
 guidata(hObject, handles);
 
 
 function spectrum2_Callback(hObject, eventdata, handles)
 handles.spectrum2flag = get(hObject,'Value')
 
+if handles.generatedflag2 == true
 if handles.spectrum2flag == true 
     fs = handles.fs;
     y2 = fftshift(fft(handles.y2));
@@ -229,6 +235,7 @@ else
     plot(handles.x2,handles.y2);
     xlabel('Time (in seconds)');
     ylabel('Amplitude (in amperes)');
+end
 end
 guidata(hObject, handles);
 
@@ -374,10 +381,43 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-function Process_Callback(hObject, eventdata, handles)
+function spectrum3_Callback(hObject, eventdata, handles)
+% TO DO JAK BÊDZIE KORELACJA
+handles.spectrum3flag = get(hObject, 'Value');
+
+if handles.generatedflag3 == true
+end
+
+guidata(hObject, handles);
 
 
 function save3_Callback(hObject, eventdata, handles)
+if handles.generatedflag3 == true
+    filter3 = {'*.txt';'*.csv';'*.*'};
+    [file2, path2] = uiputfile(filter3);
+    file3_3 = fopen (strcat(path3,file3),'w');
+    fprintf(file3_3,'%8.5f,%8.5f\n',[handles.x3;handles.y3]);
+    fclose(file3_3);
+else
+    errordlg('You cannot save a blank plot!','Error');
+end
 
 
 function load3_Callback(hObject, eventdata, handles)
+filter3 = {'*.txt';'*.csv';'*.*'};
+[file3,path3] = uigetfile(filter3);
+file3 = load(strcat(path3,file3));
+
+%plot
+axes(handles.axes3);
+plot(file3(:,1),file3(:,2));
+xlabel('Time (in seconds)');
+ylabel('Amplitude (in amperes)');
+
+%handles
+handles.x3 = file3(:,1);
+handles.y3 = file3(:,2);
+handles.generatedflag3 = true;
+guidata(hObject, handles);
+
+function Process_Callback(hObject, eventdata, handles)
