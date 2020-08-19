@@ -30,6 +30,17 @@ handles.generatedflag2 = false;
 handles.generatedflag3 = false;
 handles.output = hObject;
 
+%default values in guide
+handles.a1 = 0;
+handles.a2 = 0;
+handles.f1 = 0;
+handles.f2 = 0;
+handles.period = 0;
+handles.period2 = 0;
+handles.fs = 0;
+handles.signaltype1 = 1;
+
+
 guidata(hObject, handles); % Update handles structure
 
 
@@ -76,9 +87,10 @@ f1 = handles.f1;
 fs = handles.fs;
 period = handles.period;
 signal = handles.signaltype1;
+noSamples = handles.noSamples
 
-if a1 == 0 || f1 == 0 || fs == 0 || period == 0
-    errordlg('Cant generate with 0 value!','Error');
+if a1 == 0 || f1 == 0 || fs == 0 || isempty(a1) || isempty(f1) || isempty(fs)
+    errordlg('Cant generate with bad value!','Error');
     return
 end
 
@@ -87,7 +99,9 @@ end
 %signal 3 - square
 %signal 4 - noise
 if signal == 1
-    t = 0:1/fs:period*1/f1+1/fs; %seconds
+    numSeconds = noSamples / fs
+    t = linspace(0, numSeconds, noSamples);
+    %t = 0:1/fs:period*1/f1+1/fs; %seconds
     u = a1*sin(2*pi*f1*t);
 elseif signal == 2
     t = 0:1/fs:period*1/f1+1/fs;
@@ -313,9 +327,10 @@ f2 = handles.f2;
 fs = handles.fs;
 period2 = handles.period2;
 signal2 = handles.signaltype2;
+noSamples = handles.noSamples;
 
-if a2 == 0 || f2 == 0 || fs == 0 || period2 == 0
-    errordlg('Cant generate with 0 value!','Error');
+if a2 == 0 || f2 == 0 || fs == 0 || isempty(a2) || isempty(f2) || isempty(fs)
+    errordlg('Cant generate with bad value!','Error');
     return
 end
 
@@ -324,7 +339,9 @@ end
 %signal 3 - square
 %signal 4 - noise
 if signal2 == 1
-    t2 = 0:1/fs:period2*1/f2+1/fs; %seconds
+    numSeconds = noSamples / fs
+    t2 = linspace(0, numSeconds, noSamples);
+    %t2 = 0:1/fs:period2*1/f2+1/fs; %seconds
     u2 = a2*sin(2*pi*f2*t2);
 elseif signal2 == 2
     t2 = 0:1/fs:period2*1/f2+1/fs;
@@ -447,3 +464,15 @@ function Number = RemoveLetters(StringWithLetters)
     if strlength(Number) == 0
         Number = "0";
     end
+
+
+
+function NoSamples_Callback(hObject, eventdata, handles)
+tempstr = RemoveLetters(get(hObject,'String'));
+handles.noSamples = str2double(tempstr);
+guidata(hObject, handles);
+
+function NoSamples_CreateFcn(hObject, eventdata, handles)
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
