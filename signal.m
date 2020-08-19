@@ -47,7 +47,8 @@ end
 
 
 function a1_Callback(hObject, eventdata, handles)
-handles.a1 = str2double(get(hObject,'String'));
+tempstr = RemoveLetters(get(hObject,'String'));
+handles.a1 = str2double(tempstr);
 guidata(hObject, handles);
 
 
@@ -58,7 +59,8 @@ end
 
 
 function f1_Callback(hObject, eventdata, handles)
-handles.f1 = str2double(get(hObject,'String'));
+tempstr = RemoveLetters(get(hObject,'String'));
+handles.f1 = str2double(tempstr);
 guidata(hObject, handles);
 
 
@@ -128,7 +130,8 @@ end
 
 
 function fs_Callback(hObject, eventdata, handles)
-handles.fs = str2double(get(hObject,'String'));
+tempstr = RemoveLetters(get(hObject,'String'));
+handles.fs = str2double(tempstr);
 guidata(hObject, handles);
 
 
@@ -139,7 +142,8 @@ end
 
 
 function period_Callback(hObject, eventdata, handles)
-handles.period = str2double(get(hObject,'String'));
+tempstr = RemoveLetters(get(hObject,'String'));
+handles.period = str2double(tempstr);
 guidata(hObject, handles);
 
 
@@ -241,7 +245,8 @@ guidata(hObject, handles);
 
 
 function a2_Callback(hObject, eventdata, handles)
-handles.a2 = str2double(get(hObject,'String'));
+tempstr = RemoveLetters(get(hObject,'String'));
+handles.a2 = str2double(tempstr);
 guidata(hObject, handles);
 
 
@@ -252,7 +257,8 @@ end
 
 
 function f2_Callback(hObject, eventdata, handles)
-handles.f2 = str2double(get(hObject,'String'));
+tempstr = RemoveLetters(get(hObject,'String'));
+handles.f2 = str2double(tempstr);
 guidata(hObject, handles);
 
 
@@ -260,7 +266,6 @@ function f2_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 function load2_Callback(hObject, eventdata, handles)
 filter2 = {'*.txt';'*.csv';'*.*'};
@@ -371,7 +376,8 @@ end
 
 
 function period2_Callback(hObject, eventdata, handles)
-handles.period2 = str2double(get(hObject,'String'));
+tempstr = RemoveLetters(get(hObject,'String'));
+handles.period2 = str2double(tempstr);
 guidata(hObject, handles);
 
 
@@ -382,7 +388,7 @@ end
 
 
 function spectrum3_Callback(hObject, eventdata, handles)
-% TO DO JAK BÊDZIE KORELACJA
+% TO DO JAK Bï¿½DZIE KORELACJA
 handles.spectrum3flag = get(hObject, 'Value');
 
 if handles.generatedflag3 == true
@@ -421,3 +427,8 @@ handles.generatedflag3 = true;
 guidata(hObject, handles);
 
 function Process_Callback(hObject, eventdata, handles)
+
+function Number = RemoveLetters(StringWithLetters)
+    Number = StringWithLetters;
+    LettersInString = isletter(StringWithLetters);
+    Number(LettersInString)=[];
