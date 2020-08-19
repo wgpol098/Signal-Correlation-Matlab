@@ -456,6 +456,23 @@ handles.generatedflag3 = true;
 guidata(hObject, handles);
 
 function Process_Callback(hObject, eventdata, handles)
+%axes(handles.axes3);
+xc=handles.x1;
+yc1=handles.y1;
+yc2=handles.y2;
+r=xcorr(yc1,yc2);
+s=size(xc);
+s=max(s);
+maxr=max(r)
+ta1=handles.a1;
+ta2=handles.a2;
+ta1=(ta1*ta2)/2;
+r=(r/maxr)*ta1;
+%r=r(s/2:s);
+%r = max(r,0)
+axes(handles.axes3);
+plot(r)
+%bar(xc,r)
 
 function Number = RemoveLetters(StringWithLetters)
     Number = StringWithLetters;
