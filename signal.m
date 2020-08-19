@@ -396,7 +396,7 @@ guidata(hObject, handles);
 function save3_Callback(hObject, eventdata, handles)
 if handles.generatedflag3 == true
     filter3 = {'*.txt';'*.csv';'*.*'};
-    [file2, path2] = uiputfile(filter3);
+    [file3, path3] = uiputfile(filter3);
     file3_3 = fopen (strcat(path3,file3),'w');
     fprintf(file3_3,'%8.5f,%8.5f\n',[handles.x3;handles.y3]);
     fclose(file3_3);
