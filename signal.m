@@ -200,14 +200,18 @@ handles.spectrum1flag = get(hObject,'Value')
 if handles.generatedflag == true
     if handles.spectrum1flag == true
         fs = handles.fs; % jeœli wczytujesz z pliku trzeba jakoœ sobie wyliczyæ fs
-        y = fftshift(fft(handles.y1));
-        n = length(handles.y1);
-        f = -fs/2:fs/n:fs/2-fs/n;
+        %y = fftshift(fft(handles.y1));
+        %n = length(handles.y1);
+        %f = -fs/2:fs/n:fs/2-fs/n;
+        %power = abs(y)*2/n;
+        y = fft(handles.y1);
+        n = length(handles.y1);          % number of samples
+        f = (0:n-1)*(fs/n);     % frequency range
+        %power = abs(y).^2/n;    % power of the DFT
         power = abs(y)*2/n;
-    
         %plot
         axes(handles.axes1);
-        plot(f,power);
+        bar(f,power);
         xlabel('Frequency (in hertz)');
         ylabel('Power (in amperes)');
     else
