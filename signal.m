@@ -129,7 +129,7 @@ set(handles.spectrum1,'Value',0);
 %plot
 axes(handles.axes1);
 plot(t,u);
-xlabel('Periods');
+xlabel('Time (in seconds)');
 ylabel('Amplitude (in amperes)');
     
 guidata(hObject, handles);
@@ -179,13 +179,14 @@ if file ~= 0
     %plot
     axes(handles.axes1);
     plot(file(:,1),file(:,2));
-    xlabel('Periods');
+    xlabel('Time (in seconds)');
     ylabel('Amplitude (in amperes)');
 
     %handles
     handles.x1 = transpose(file(:,1));
     handles.y1 = transpose(file(:,2));
     handles.generatedflag = true;
+    set(handles.spectrum1,'Value',0);
     guidata(hObject, handles);
 end
 
@@ -199,17 +200,10 @@ handles.spectrum1flag = get(hObject,'Value')
 
 if handles.generatedflag == true
     if handles.spectrum1flag == true
-        fs = handles.fs; % jeœli wczytujesz z pliku trzeba jakoœ sobie wyliczyæ fs
-        %y = fftshift(fft(handles.y1));
-        %n = length(handles.y1);
-        %f = -fs/2:fs/n:fs/2-fs/n;
-        %power = abs(y)*2/n;
         y = fft(handles.y1);
         n = length(handles.y1);          % number of samples
-        f = (0:n-1)*(fs/n);     % frequency range
-        %power = abs(y).^2/n;    % power of the DFT
+        f = (0:n-1)*(handles.fs/n);     % frequency range
         power = abs(y)*2/n;
-        %plot
         axes(handles.axes1);
         bar(f,power);
         xlabel('Frequency (in hertz)');
@@ -217,7 +211,7 @@ if handles.generatedflag == true
     else
         axes(handles.axes1);
         plot(handles.x1,handles.y1);
-        xlabel('Periods');
+        xlabel('Time (in seconds)');
         ylabel('Amplitude (in amperes)');
     end
 end
@@ -229,21 +223,18 @@ handles.spectrum2flag = get(hObject,'Value')
 
 if handles.generatedflag2 == true
 if handles.spectrum2flag == true 
-    fs = handles.fs;
-    y2 = fftshift(fft(handles.y2));
-    n2 = length(handles.y2); 
-    f2 = -fs/2:fs/n2:fs/2-fs/n2; 
-    power2 = abs(y2)*2/n2;
-    
-    %plot
-    axes(handles.axes2);
-    plot(f2,power2);
-    xlabel('Frequency (in hertz)');
-    ylabel('Power (in amperes)');
+        y = fft(handles.y2);
+        n = length(handles.y2);          % number of samples
+        f = (0:n-1)*(handles.fs/n);     % frequency range
+        power = abs(y)*2/n;
+        axes(handles.axes2);
+        bar(f,power);
+        xlabel('Frequency (in hertz)');
+        ylabel('Power (in amperes)');
 else
     axes(handles.axes2);
     plot(handles.x2,handles.y2);
-    xlabel('Periods');
+    xlabel('Time (in seconds)');
     ylabel('Amplitude (in amperes)');
 end
 end
@@ -282,13 +273,14 @@ if file2 ~= 0
     %plot
     axes(handles.axes2);
     plot(file2(:,1),file2(:,2));
-    xlabel('Periods');
+    xlabel('Time (in seconds)');
     ylabel('Amplitude (in amperes)');
 
     %handles
     handles.x2 = transpose(file2(:,1));
     handles.y2 = transpose(file2(:,2));
     handles.generatedflag2 = true;
+    set(handles.spectrum2,'Value',0);
     guidata(hObject, handles);
 end
 
@@ -350,7 +342,7 @@ set(handles.spectrum2,'Value',0);
 %plot
 axes(handles.axes2);
 plot(t2,u2);
-xlabel('Periods');
+xlabel('Time (in seconds)');
 ylabel('Amplitude (in amperes)');
 guidata(hObject, handles);
 
@@ -372,26 +364,21 @@ guidata(hObject, handles);
 
 
 function spectrum3_Callback(hObject, eventdata, handles)
-% TO DO JAK Bï¿½DZIE KORELACJA
-%---------
 handles.spectrum3flag = get(hObject,'Value')
 if handles.generatedflag3 == true
 if handles.spectrum3flag == true 
-    fs = handles.fs;
-    y3 = fftshift(fft(handles.y3));
-    n3 = length(handles.y3); 
-    f3 = -fs/2:fs/n3:fs/2-fs/n3; 
-    power3 = abs(y3)*2/n3;
-    
-    %plot
-    axes(handles.axes3);
-    plot(f3,power3);
-    xlabel('Frequency (in hertz)');
-    ylabel('Power (in amperes)');
+        y = fft(handles.y3);
+        n = length(handles.y3);          % number of samples
+        f = (0:n-1)*(handles.fs/n);     % frequency range
+        power = abs(y)*2/n;
+        axes(handles.axes3);
+        bar(f,power);
+        xlabel('Frequency (in hertz)');
+        ylabel('Power (in amperes)');
 else
     axes(handles.axes3);
     plot(handles.x3,handles.y3);
-    xlabel('Periods');
+    xlabel('Time (in seconds)');
     ylabel('Amplitude (in amperes)');
 end
 end
@@ -421,7 +408,7 @@ if file3 ~= 0
     %plot
     axes(handles.axes3);
     plot(file3(:,1),file3(:,2));
-    xlabel('Periods');
+    xlabel('Time (in seconds)');
     ylabel('Amplitude (in amperes)');
 
     %handles
@@ -445,6 +432,7 @@ if handles.generatedflag == true && handles.generatedflag2 == true
     handles.y3=r;
     handles.x3=x3;
     handles.generatedflag3 = true;
+    set(handles.spectrum3,'Value',0);
     guidata(hObject, handles);
 else
     errordlg('You cannot generate correlation!','Error');
