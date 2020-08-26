@@ -205,9 +205,14 @@ if handles.generatedflag == true
         f = (0:n-1)*(handles.fs/n);     % frequency range
         power = abs(y)*2/n;
         axes(handles.axes1);
-        bar(f,power);
-        xlabel('Frequency (in hertz)');
-        ylabel('Power (in amperes)');
+        if (sum(f) ~= 0)
+            bar(f,power);
+            xlabel('Frequency (in hertz)');
+            ylabel('Power (in amperes)');
+        else
+            errordlg('You need to complete the "fp" field!','Error');
+            set(handles.spectrum1,'Value',0);
+        end
     else
         axes(handles.axes1);
         plot(handles.x1,handles.y1);
@@ -228,9 +233,14 @@ if handles.spectrum2flag == true
         f = (0:n-1)*(handles.fs/n);     % frequency range
         power = abs(y)*2/n;
         axes(handles.axes2);
-        bar(f,power);
-        xlabel('Frequency (in hertz)');
-        ylabel('Power (in amperes)');
+        if (sum(f) ~= 0)
+            bar(f,power);
+            xlabel('Frequency (in hertz)');
+            ylabel('Power (in amperes)');
+        else
+            errordlg('You need to complete the "fp" field!','Error');
+            set(handles.spectrum2,'Value',0);
+        end
 else
     axes(handles.axes2);
     plot(handles.x2,handles.y2);
@@ -372,9 +382,14 @@ if handles.spectrum3flag == true
         f = (0:n-1)*(handles.fs/n);     % frequency range
         power = abs(y)*2/n;
         axes(handles.axes3);
-        bar(f,power);
-        xlabel('Frequency (in hertz)');
-        ylabel('Power (in amperes)');
+        if (sum(f) ~= 0)
+            bar(f,power);
+            xlabel('Frequency (in hertz)');
+            ylabel('Power (in amperes)');
+        else
+            errordlg('You need to complete the "fp" field!','Error');
+            set(handles.spectrum3,'Value',0);
+        end
 else
     axes(handles.axes3);
     plot(handles.x3,handles.y3);
